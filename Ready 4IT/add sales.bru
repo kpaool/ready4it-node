@@ -1,0 +1,26 @@
+meta {
+  name: add sales
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3000/sales
+  body: json
+  auth: inherit
+}
+
+body:json {
+   {
+      "id": 34,
+      "name": "Milk",
+      "price": 1000,
+      "quantity": 10,
+      "date": "2025-01-28"
+    }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
