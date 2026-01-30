@@ -1,0 +1,21 @@
+{
+  "name": "ready4it-node",
+  "version": "1.0.2",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.21.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --watch server.js",
+    "prestart": "npm i",
+    "poststart": "echo 'Server is running successfully on port 3000'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "is-even": "^1.0.0"
+  }
+}

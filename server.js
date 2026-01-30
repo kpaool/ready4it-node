@@ -55,59 +55,14 @@ const server = http.createServer((req, res) => {
 
 
                 req.on("end", () => {
-                    // converted into an object
-                    body = JSON.parse(body)
-                    console.log(body)
-
-                    fs.readFile("sales.json", (err, data) => {
-                        if (err) {
-                            res.writeHead(500, {
-                                "content-type": "application/json"
-                            })
-
-                            res.write(JSON.stringify({ message: err }))
-                            res.end()
-                        } else {
-                            let allSales = JSON.parse(data)
-                            allSales.push(body)
-
-                            let allSalesString = JSON.stringify(allSales)
-
-                            fs.writeFile("sales.json", allSalesString, (err) => {
-                                if (err) {
-                                    res.writeHead(500, {
-                                        "content-type": "application/json"
-                                    })
-
-                                    res.write(JSON.stringify({ message: err }))
-                                    res.end()
-                                } else {
-
-                                    res.writeHead(201, {
-                                        "content-type": "application/json"
-                                    })
-
-                                    res.write(JSON.stringify({
-                                        message: "Sale added successfully",
-                                        body
-                                    }))
-
-                                    res.end()
-
-                                }
-                            })
-
-                        }
+                    res.writeHead(200, {
+                        "Content-Type": "application/json"
                     })
+                    body = JSON.parse(body)
 
-
-
-
-
+                    res.write(JSON.stringify({ message: "Data processed successfully", body }))
+                    res.end()
                 })
-
-
-
             } else {
                 res.writeHead(400, {
                     "content-type": "application/json"
