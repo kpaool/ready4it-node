@@ -10,6 +10,11 @@ get {
   auth: inherit
 }
 
+headers {
+  user-details: {"username":"admin","role":"admin"}
+}
+
 settings {
   encodeUrl: true
+  timeout: 0
 }

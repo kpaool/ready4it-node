@@ -1,17 +1,13 @@
 meta {
-  name: sales
+  name: get sale by id
   type: http
-  seq: 2
+  seq: 6
 }
 
 get {
   url: http://localhost:3000/sales
   body: none
   auth: inherit
-}
-
-headers {
-  user-details: {"username":"admin","role":"admin"}
 }
 
 settings {

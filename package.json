@@ -9,7 +9,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node --watch server.js",
     "prestart": "npm i",
-    "poststart": "echo 'Server is running successfully on port 3000'"
+    "poststart": "echo 'Server is running successfully on port 3000'",
+    "express": "node --watch express-server.js"
   },
   "keywords": [],
   "author": "",
@@ -17,5 +18,8 @@
   "description": "",
   "devDependencies": {
     "is-even": "^1.0.0"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
   }
 }
