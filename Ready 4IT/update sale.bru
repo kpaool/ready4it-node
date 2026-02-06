@@ -1,0 +1,22 @@
+meta {
+  name: update sale
+  type: http
+  seq: 6
+}
+
+patch {
+  url: http://localhost:3000/sales/6984358cf6550113a093cca8
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "amount": 1000
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

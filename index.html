@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consume endpoint</title>
+</head>
+
+<body>
+
+
+    <h1>Get sales</h1>
+
+    <ul id="sales">
+
+    </ul>
+
+
+    <script>
+
+
+        let saleList = document.querySelector("#sales")
+
+        let HTMLString = "<li>THis sale was for customer paul and was a total 0f 5000</li>"
+        fetch("http://localhost:3000/sales")
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(sale => {
+                    HTMLString += `<li>THis sale was for customer ${sale.customerName} and was a total 0f ${sale.amount}</li> `
+                })
+                saleList.innerHTML = HTMLString
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+
+    </script>
+
+
+</body>
+
+</html>

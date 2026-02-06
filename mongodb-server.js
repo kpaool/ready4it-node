@@ -1,9 +1,6 @@
 const mongoose = require("mongoose")
 
-
 const URI = "mongodb://localhost:27017/kgl"
-
-
 mongoose.connect(URI)
     .then(() => {
         console.log("Connect to mongo db")
@@ -12,19 +9,29 @@ mongoose.connect(URI)
         console.log(err)
     })
 
-const mongodb = mongoose.connection
 
-modules.exports = mongodb
-
-mongodb.on("open", () => {
-    console.log("now the database is open")
-    const salesCollection = mongodb.db.collection("sales")
-    salesCollection.find({})
-        .toArray()
-        .then((sales) => {
-            console.log(sales)
-        })
-        .catch(err => {
-            console.log(err)
-        })
+let salesSchema = new mongoose.Schema({
+    amount: {
+        type: Number,
+        required: true,
+        min: 2000
+    },
+    customerName: {
+        type: String,
+        required: true
+    },
+    date: {
+        type: Date,
+        required: true
+    },
+    currency: {
+        type: String,
+        required: true
+    }
 })
+
+let SalesModel = mongoose.model("sales", salesSchema)
+
+module.exports = { SalesModel }
+
+
