@@ -4,6 +4,12 @@ const { router: salesRouter } = require("./routers/sales.js")
 const { router: usersRouter } = require("./routers/users.js")
 const { simulateSalesAgent } = require("./middleware/index.js")
 const { errorHandler } = require("./middleware/error.js")
+const swaggerUi = require('swagger-ui-express');
+const swaggerJSDoc = require('swagger-jsdoc');
+const basicAuth = require('express-basic-auth');
+
+
+
 
 const app = express()
 
@@ -14,6 +20,42 @@ app.use(cors({
 }))
 
 app.use(express.json())
+
+// Swagger definition
+const swaggerDefinition = {
+    openapi: '3.0.0', // Specify the OpenAPI version
+    info: {
+        title: 'KGL REST API Documentation',
+        version: '1.0.5',
+        description: 'This is the documentation for the KGL REST API for the frontend app',
+    },
+    servers: [
+        {
+            url: 'http://localhost:3000',
+            description: 'Development server',
+        },
+    ],
+};
+
+// Options for swagger-jsdoc
+const options = {
+    swaggerDefinition, // Use the swaggerDefinition object defined above
+    apis: ['./routers/*.js'], // Specify the path to your API route files
+};
+
+
+// Configure basic authentication
+const swaggerAuth = basicAuth({
+    users: { 'admin': 'SuperSecretPassword123' }, // Replace with secure credentials (e.g., from environment variables)
+    challenge: true, // Prompts the browser for credentials
+    realm: 'Swagger Documentation'
+});
+
+// Create the Swagger specification
+const swaggerSpec = swaggerJSDoc(options);
+
+// Serve Swagger UI
+app.use('/api-docs', swaggerAuth, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
 app.use(simulateSalesAgent)

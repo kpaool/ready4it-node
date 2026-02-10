@@ -6,8 +6,37 @@ const { SalesModel } = require("../mongodb-server.js")
 const router = express.Router()
 
 
-//we add all the routes for sales to the router
-
+/**
+ * @swagger
+ * /sales:
+ *   get:
+ *     summary: Get all sales
+ *     description: Retrieve a list of all sales from the database
+ *     tags:
+ *       - Sales
+ *     responses:
+ *       200:
+ *         description: A list of sales
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     description: The sale ID
+ *                   name:
+ *                     type: string
+ *                     description: The sale name
+ *                   email:
+ *                     type: string
+ *                     description: The sale email
+ *                   password:
+ *                     type: string
+ *                     description: The sale password
+ */
 router.get("/", async (req, res, next) => {
 
     try {
@@ -21,7 +50,40 @@ router.get("/", async (req, res, next) => {
 })
 
 /**
- * This route returns sale by id
+ * @swagger
+ * /sales/{id}:
+ *   get:
+ *     summary: Get a single sale by ID
+ *     description: Retrieve a single sale from the database by their ID
+ *     tags:
+ *       - Sales
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the sale to retrieve
+ *     responses:
+ *       200:
+ *         description: A single sale
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The sale ID
+ *                 name:
+ *                   type: string
+ *                   description: The sale name
+ *                 email:
+ *                   type: string
+ *                   description: The sale email
+ *                 password:
+ *                   type: string
+ *                   description: The sale password
  */
 router.get("/:id", async (req, res, next) => {
     let id = req.params.id
@@ -44,7 +106,48 @@ router.get("/:id", async (req, res, next) => {
 })
 
 /**
- * Post method to save sales
+ * @swagger
+ * /sales:
+ *   post:
+ *     summary: Create a new sale
+ *     description: Create a new sale in the database
+ *     tags:
+ *       - Sales
+ *     parameters:
+ *       - in: body
+ *         name: sale
+ *         schema:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *               description: The sale name
+ *             email:
+ *               type: string
+ *               description: The sale email
+ *             password:
+ *               type: string
+ *               description: The sale password
+ *     responses:
+ *       201:
+ *         description: A single sale
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The sale ID
+ *                 name:
+ *                   type: string
+ *                   description: The sale name
+ *                 email:
+ *                   type: string
+ *                   description: The sale email
+ *                 password:
+ *                   type: string
+ *                   description: The sale password
  */
 router.post("/", async (req, res) => {
     let body = req.body
@@ -69,6 +172,42 @@ router.post("/", async (req, res) => {
 
 })
 
+/**
+ * @swagger
+ * /sales/{id}:
+ *   patch:
+ *     summary: Update a single sale by ID
+ *     description: Update a single sale in the database by their ID
+ *     tags:
+ *       - Sales
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the sale to update
+ *     responses:
+ *       200:
+ *         description: A single sale
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The sale ID
+ *                 name:
+ *                   type: string
+ *                   description: The sale name
+ *                 email:
+ *                   type: string
+ *                   description: The sale email
+ *                 password:
+ *                   type: string
+ *                   description: The sale password
+ */
 router.patch("/:id", async (req, res) => {
 
     try {
@@ -92,6 +231,42 @@ router.patch("/:id", async (req, res) => {
 
 })
 
+/**
+ * @swagger
+ * /sales/{id}:
+ *   delete:
+ *     summary: Delete a single sale by ID
+ *     description: Delete a single sale from the database by their ID
+ *     tags:
+ *       - Sales
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the sale to delete
+ *     responses:
+ *       200:
+ *         description: A single sale
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The sale ID
+ *                 name:
+ *                   type: string
+ *                   description: The sale name
+ *                 email:
+ *                   type: string
+ *                   description: The sale email
+ *                 password:
+ *                   type: string
+ *                   description: The sale password
+ */
 router.delete("/:salesId", async (req, res) => {
     try {
         const id = req.params.salesId

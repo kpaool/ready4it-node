@@ -7,7 +7,37 @@ const { KGLError } = require("../utils/custom-error.js")
 const router = express.Router()
 
 
-// Route to get all users
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Get all users
+ *     description: Retrieve a list of all users from the database
+ *     tags:
+ *       - Users
+ *     responses:
+ *       200:
+ *         description: A list of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     description: The user ID
+ *                   name:
+ *                     type: string
+ *                     description: The user name
+ *                   email:
+ *                     type: string
+ *                     description: The user email
+ *                   password:
+ *                     type: string
+ *                     description: The user password
+ */
 router.get("/", async (req, res, next) => {
     // Fetch all users from the database
     const users = await usersModel.find({})
@@ -27,7 +57,42 @@ router.get("/", async (req, res, next) => {
     }
 })
 
-// Route to get a single user by ID
+/**
+ * @swagger
+ * /users/{id}:
+ *   get:
+ *     summary: Get a single user by ID
+ *     description: Retrieve a single user from the database by their ID
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the user to retrieve
+ *     responses:
+ *       200:
+ *         description: A single user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The user ID
+ *                 name:
+ *                   type: string
+ *                   description: The user name
+ *                 email:
+ *                   type: string
+ *                   description: The user email
+ *                 password:
+ *                   type: string
+ *                   description: The user password
+ */
 router.get("/:id", async (req, res, next) => {
     // Find a user by the ID provided in the request parameters
     const user = await usersModel.findById(req.params.id)
@@ -44,7 +109,43 @@ router.get("/:id", async (req, res, next) => {
     }
 })
 
-// Route to update a user by ID
+
+/**
+ * @swagger
+ * /users/{id}:
+ *   patch:
+ *     summary: Update a single user by ID
+ *     description: Update a single user in the database by their ID
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the user to update
+ *     responses:
+ *       200:
+ *         description: A single user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The user ID
+ *                 name:
+ *                   type: string
+ *                   description: The user name
+ *                 email:
+ *                   type: string
+ *                   description: The user email
+ *                 password:
+ *                   type: string
+ *                   description: The user password
+ */
 router.patch("/:id", async (req, res, next) => {
     try {
         let id = req.params.id
@@ -70,7 +171,59 @@ router.patch("/:id", async (req, res, next) => {
     }
 })
 
-// Route to create a new user
+/**
+ * @swagger
+ * /users:
+ *   post:
+ *     summary: Create a new user
+ *     description: Create a new user in the database
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: body
+ *         name: user
+ *         schema:
+ *           type: object
+ *           properties:
+ *             fullName:
+ *               type: string
+ *               description: The user name
+ *             email:
+ *               type: string
+ *               description: The user email
+ *             password:
+ *               type: string
+ *               description: The user password
+ *             role:
+ *               type: string
+ *               description: The user role
+ *             department:
+ *               type: string
+ *               description: The user department
+ *             status:
+ *               type: string
+ *               description: The user status
+ *     responses:
+ *       201:
+ *         description: A single user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The user ID
+ *                 name:
+ *                   type: string
+ *                   description: The user name
+ *                 email:
+ *                   type: string
+ *                   description: The user email
+ *                 password:
+ *                   type: string
+ *                   description: The user password
+ */
 router.post("/", async (req, res, next) => {
     try {
         let body = req.body
@@ -95,7 +248,42 @@ router.post("/", async (req, res, next) => {
     }
 })
 
-// Route to delete a user by ID
+/**
+ * @swagger
+ * /users/{id}:
+ *   delete:
+ *     summary: Delete a single user by ID
+ *     description: Delete a single user from the database by their ID
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the user to delete
+ *     responses:
+ *       200:
+ *         description: A single user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The user ID
+ *                 name:
+ *                   type: string
+ *                   description: The user name
+ *                 email:
+ *                   type: string
+ *                   description: The user email
+ *                 password:
+ *                   type: string
+ *                   description: The user password
+ */
 router.delete("/:id", async (req, res, next) => {
     try {
         let id = req.params.id
