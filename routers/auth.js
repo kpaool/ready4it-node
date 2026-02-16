@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 const usersModel = require("../models/users.js")
 const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
 
 router.post("/login", async (req, res) => {
     // get user email and password from request body
@@ -9,10 +10,12 @@ router.post("/login", async (req, res) => {
 
 
     // we are looking for a user in the database with the email and password provided
-    let _user = await usersModel.findOne({ email, password })
+    let _user = await usersModel.findOne({ email })
+
+    let isPasswordCorrect = await bcrypt.compare(password, _user.password)
 
     // if user is found, return the user
-    if (_user) {
+    if (_user && isPasswordCorrect) {
         let user = {
             fullName: _user.fullName,
             email: _user.email,

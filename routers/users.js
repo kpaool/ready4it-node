@@ -2,7 +2,7 @@
 const express = require("express")
 const usersModel = require("../models/users.js")
 const { KGLError } = require("../utils/custom-error.js")
-
+const bcrypt = require("bcrypt")
 // Create a new router instance
 const router = express.Router()
 
@@ -229,7 +229,10 @@ router.post("/", async (req, res, next) => {
         let body = req.body
 
         // Set a default password for the new user
-        body.password = "123456"
+
+        let password = await bcrypt.hash(body.password, 10)
+
+        body.password = password
 
         // Create a new user instance with the request body
         let user = new usersModel(body)

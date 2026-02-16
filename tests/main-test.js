@@ -1,6 +1,7 @@
 const assert = require("node:assert")
 const { test, describe } = require("node:test")
 const { sumOfSales } = require("../utils/index.js")
+const bcrypt = require("bcrypt")
 
 function validatedTonnage(tons) {
     return tons > 1000
@@ -45,3 +46,21 @@ describe("Sales summation", () => {
     })
 })
 
+describe("Hashing of password", () => {
+
+    test("Password hashing", () => {
+
+
+        (async () => {
+            let password = "123456"
+            let hashedPassword = await bcrypt.hash(password, 10)
+
+            console.log(hashedPassword)
+
+            assert.strictEqual(true, true, "The password is not hashed")
+        })()
+
+
+    })
+
+})

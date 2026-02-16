@@ -1,0 +1,27 @@
+meta {
+  name: create user
+  type: http
+  seq: 11
+}
+
+post {
+  url: http:localhost:3000/user
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "fullName":"fullname",
+    "email":"emial@email.com",
+    "password":"password",
+    "role":"sales-agent",
+    "department":"Sales",
+    "status":"active"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
