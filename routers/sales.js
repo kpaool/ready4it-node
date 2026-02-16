@@ -5,6 +5,23 @@ const { SalesModel } = require("../mongodb-server.js")
 // create a sales router
 const router = express.Router()
 
+router.use((req, res, next) => {
+    if (req.user && req.user.role && req.user.role.toLowerCase() !== "sales-agent") {
+        next()
+    } else {
+        res.status(403).json({ message: "You need to be an admin to access this resources" })
+    }
+})
+
+router.use((req, res, next) => {
+    if (req.user && req.user.role && req.user.role.toLowerCase() === "viewonlyadmin") {
+        if (req.method.toLowerCase() === "post" || req.method.toLowerCase() === "patch" || req.method.toLowerCase() === "delete") {
+            res.status(403).json({ message: "You have read only rights" })
+            return
+        }
+    }
+    next()
+})
 
 /**
  * @swagger

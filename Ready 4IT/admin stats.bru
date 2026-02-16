@@ -1,0 +1,15 @@
+meta {
+  name: admin stats
+  type: http
+  seq: 9
+}
+
+get {
+  url: http://localhost:3000/admin
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}
