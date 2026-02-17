@@ -49,7 +49,10 @@ const isNotSalesManager = (req, res, next) => {
 }
 
 const authMiddleware = (req, res, next) => {
-    const token = req.headers.authorization.split(" ")[1]
+
+    //Bearer eyqdfsdsf.fwfw23dw9.ddfsdfdf    this is the expected value from the header authorization
+
+    const token = req.headers.authorization?.split(" ")[1]
     if (token) {
         jwt.verify(token, process.env.JWT_SECRET, (err, decode) => {
             if (err) {

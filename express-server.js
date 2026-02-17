@@ -78,6 +78,8 @@ app.use("/", authMiddleware, protectedRouter)
 
 
 
+
+
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 3000
