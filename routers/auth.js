@@ -39,8 +39,8 @@ router.post("/login", async (req, res) => {
         // if user is not found, return an error message
         res.status(401).json({ message: "Invalid credentials" })
     }
-
 })
+
 
 /**
  * @swagger
