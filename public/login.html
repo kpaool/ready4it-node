@@ -158,7 +158,7 @@
         let loginForm = document.querySelector("#login-form")
         let usernameElement = document.querySelector("#username")
         let passwordElement = document.querySelector("#password")
-        const BACKEND_URL = "https://kgl-express-server.onrender.com"
+        const BACKEND_URL = window.location.origin
 
         loginForm.addEventListener("submit", async (e) => {
             e.preventDefault()

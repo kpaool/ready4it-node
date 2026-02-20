@@ -624,8 +624,11 @@
         })
         navLinkElement.innerHTML = HTMLString
 
+
+        // window.location.origin
+
         // Configuration for the backend API URL
-        const API_URL = "https://kgl-express-server.onrender.com"
+        const API_URL = window.location.origin
 
         // DOM Element Selections
         // We select all necessary elements once to avoid repeated DOM queries
