@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KGL Groceries - New Sale</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            --dark: #333;
+            --border: #ddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top Nav */
+        .top-nav {
+            background-color: var(--dark);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        /* Form Container */
+        .form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-top: 0;
+            border-bottom: 2px solid var(--bg);
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            /* Ensures padding doesn't affect width */
+            font-size: 1rem;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 5px rgba(46, 125, 50, 0.2);
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Toggle for Credit */
+        .sale-type-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .type-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--border);
+            background: #f9f9f9;
+            cursor: pointer;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .type-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #1b5e20;
+        }
+
+        .helper-text {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="top-nav">
+        <a href="kgl.html" class="back-link">← Back to Dashboard</a>
+        <div>Logged in: <strong>Alex Mwangi (Agent)</strong></div>
+    </nav>
+
+    <div class="form-container">
+        <h2>Record New Sale</h2>
+
+        <form id="sale-form">
+            <div class="form-group">
+                <label>Sale Type</label>
+                <div class="sale-type-selector">
+
+                    <input type="radio" value="cash" name="sale-type" id="cash">
+                    <label for="cash">Cash Sale</label>
+
+                    <input type="radio" value="credit" name="sale-type" id="credit">
+                    <label for="credit">Credit Sale</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="items">Items Purchased</label>
+                <textarea id="items" rows="3" placeholder="e.g. 2kg Sugar, 1 Bar Soap, 5 Eggs"></textarea>
+            </div>
+
+            <div class="row">
+                <div class="form-group" style="flex: 2;">
+                    <label for="amount">Total Amount (UGX)</label>
+                    <input type="number" id="amount" placeholder="0.00">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" value="2026-01-23">
+                </div>
+            </div>
+
+            <div id="credit-fields">
+                <div class="form-group">
+                    <label for="customer">Customer Name (For Credit)</label>
+                    <input type="text" id="customer" placeholder="Enter customer name">
+                </div>
+                <div class="form-group">
+                    <label for="due-date">Due Date</label>
+                    <input type="date" id="due-date">
+                    <span class="helper-text">When should the customer pay back?</span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Save Transaction</button>
+        </form>
+    </div>
+
+
+    <script>
+
+        let form = document.querySelector("#sale-form")
+        let itemsElement = document.querySelector("#items")
+        let amountElement = document.querySelector("#amount")
+        let dateElement = document.querySelector("#date")
+        let customerElement = document.querySelector("#customer")
+        let dueDateElement = document.querySelector("#due-date")
+        let typeOfSales = document.querySelectorAll("input[name=sale-type]")
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault()
+
+            let typeOfSale
+            typeOfSales.forEach((node) => {
+                if (node.checked) {
+                    typeOfSale = node.value
+                }
+            })
+
+            let formValues = {
+                items: itemsElement.value,
+                total: amountElement.value,
+                date: dateElement.value,
+                customer: customerElement.value,
+                dueDate: dueDateElement.value,
+                isCredit: typeOfSale === "cash" ? false : true,
+                balance: 0,
+                status: "",
+            }
+
+
+
+            let transactions = JSON.parse(localStorage.getItem("transactions") || "[]")
+
+            transactions.push(formValues)
+            localStorage.setItem("transactions", JSON.stringify(transactions))
+
+            alert("Transaction added successfully")
+            form.reset()
+            window.location.href = "kgl.html"
+        })
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,848 @@
+<!-- 
+    User Management Page
+    This file contains the complete frontend for the User Management interface.
+    It includes:
+    1. HTML Structure: Defines the layout, modal, and data table.
+    2. CSS Styling: Internal styles using CSS variables for a "Green Theme".
+    3. JavaScript: Handles API interactions (CRUD operations) with a local backend.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Green Theme</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <style>
+        /* --- THEME VARIABLES (GREEN) --- */
+        :root {
+            --primary: #2e7d32;
+            --secondary: #fbc02d;
+            --danger: #d32f2f;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            --dark: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- HEADER & NAVIGATION --- */
+        header {
+            background-color: var(--bg-card);
+            height: 70px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-links li a {
+            text-decoration: none;
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            background-color: var(--primary-light);
+            color: var(--primary-hover);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background-color: var(--primary-light);
+            color: var(--primary-hover);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* --- MAIN LAYOUT --- */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            width: 95%;
+            flex: 1;
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* --- ACTIONS BAR --- */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            background: var(--bg-card);
+            padding: 1rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+
+        .search-wrapper input {
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            width: 280px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .search-wrapper input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .search-wrapper .material-icons-outlined {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .btn-green {
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-green:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* --- DATA TABLE --- */
+        .table-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 0.5rem 0.5rem;
+            overflow-x: auto;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #f9fafb;
+            text-align: left;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #f0fdf4;
+            /* Very light green on hover */
+        }
+
+        /* User Info Cell */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .user-img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-details div:first-child {
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        .user-details div:last-child {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .badge-success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .badge-danger {
+            background-color: var(--danger-bg);
+            color: var(--danger-text);
+        }
+
+        /* Action Buttons */
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background-color: var(--bg-body);
+            color: var(--primary);
+        }
+
+        .icon-btn.delete:hover {
+            color: var(--danger-text);
+            background-color: var(--danger-bg);
+        }
+
+        /* --- CSS MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease-in-out;
+            z-index: 100;
+            backdrop-filter: blur(2px);
+        }
+
+        #new-user-modal:target {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            transform: scale(0.95);
+            transition: transform 0.2s;
+        }
+
+        #new-user-modal:target .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .close-icon {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .btn-outline {
+            text-decoration: none;
+            color: var(--text-main);
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: white;
+        }
+
+        .btn-outline:hover {
+            background-color: #f9fafb;
+        }
+
+        /* Top Auth Bar */
+        .top-nav {
+            background-color: var(--dark);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .role-badge {
+            background-color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            color: #bbb;
+            text-decoration: none;
+            border: 1px solid #555;
+            padding: 4px 10px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            color: white;
+            background: var(--danger);
+            border-color: var(--danger);
+        }
+
+        #nav-links a {
+            color: wheat
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="top-nav">
+        <div class="user-info">
+            <span>Logged in as: <strong id="fullName">Alex Mwangi</strong></span>
+            <span class="role-badge" id="userRole">Sales Agent</span>
+        </div>
+        <a href="login.html" class="logout-btn">Logout</a>
+
+        <div id="nav-links">
+            <a href="sales.html">Sales Dashboard</a>
+            <a href="manager.html">Manager Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="page-header">
+            <h1>User Management</h1>
+        </div>
+
+        <div class="toolbar">
+            <div class="search-wrapper">
+                <span class="material-icons-outlined">search</span>
+                <input type="text" placeholder="Search by name or email...">
+            </div>
+            <a href="#new-user-modal" class="btn-green">
+                <span class="material-icons-outlined">add</span>
+                Add User
+            </a>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <!-- Table Header: Defines the columns for the user data -->
+                <thead>
+                    <tr>
+                        <th>User Profile</th>
+                        <th>Role</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table-body">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 
+        Modal Component 
+        Used for both adding new users and editing existing ones.
+        Uses CSS :target selector for showing/hiding (no JS needed for toggle).
+    -->
+    <div id="new-user-modal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 style="font-size: 1.25rem;">Create New User</h3>
+                <a href="#" class="close-icon">&times;</a>
+            </div>
+            <form>
+                <div>
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="fullNameInput" class="form-control" placeholder="John Doe">
+                </div>
+                <div>
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="john@company.com">
+                </div>
+                <div>
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Password">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <label class="form-label">Role</label>
+                        <select class="form-control" id="role">
+                            <option value="sales-agent">Sales Agent</option>
+                            <option value="manager">Manager</option>
+                            <option value="it-agent">IT Agent</option>
+                            <option value="super-admin">Super Admin</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Status</label>
+                        <select class="form-control" id="status">
+                            <option>Active</option>
+                            <option>Inactive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Department</label>
+                        <select class="form-control" id="department">
+                            <option value="sales">Sales</option>
+                            <option value="procurement">Procurement</option>
+                            <option value="it">IT</option>
+                            <option value="hr">HR</option>
+                            <option value="finance">Finance</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="operations">Operations</option>
+                            <option value="customer-service">Customer Service</option>
+                            <option value="legal">Legal</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <input type="hidden" id="action" value="create">
+                    <input type="hidden" id="userID" value="">
+                </div>
+                <div class="modal-actions">
+                    <a href="#" class="btn-outline">Cancel</a>
+                    <button type="button" id="addUserBtn" class="btn-green">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- 
+        Application Logic 
+        Handles all interactions with the backend API including:
+        - Fetching and displaying users
+        - Adding new users
+        - Editing existing users
+        - Deleting users
+    -->
+    <script>
+
+
+        let token = localStorage.getItem("tokenKGL")
+        let navLinkElement = document.querySelector("#nav-links")
+
+        if (!token) {
+            window.location.href = "login.html"
+        }
+
+        let pages = {
+            "sales-agent": [{ "name": "Sales Dashboard", "link": "sales.html", }, { "name": "Users Management", "link": "users.html", }],
+            "manager": [{ "name": "Manager Dashboard", "link": "manager.html" }, { "name": "Users Management", "link": "users.html", }],
+            "super-admin": [{ "name": "Sales Dashboard", "link": "sales.html" }, { "name": "Manager Dashboard", "link": "manager.html" }, { "name": "Users Management", "link": "users.html", }]
+        }
+
+        function decodeJwtPayload(token) {
+            try {
+                // Split the token into its three parts: header, payload, and signature
+                const parts = token.split('.');
+                if (parts.length !== 3) {
+                    throw new Error('Invalid token specified: missing part');
+                }
+
+                // The payload is the second part (index 1)
+                const base64Url = parts[1];
+
+                // Convert from Base64Url to Base64 by replacing '-' with '+' and '_' with '/'
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+
+                // Use the built-in atob() function to decode the Base64 string
+                const decodedPayload = window.atob(base64);
+
+                // Handle potential Unicode characters with decodeURIComponent and map function
+                const jsonPayload = decodeURIComponent(decodedPayload.split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+
+                // Parse the decoded JSON string into a JavaScript object
+                return JSON.parse(jsonPayload);
+
+            } catch (e) {
+                console.error("Failed to decode JWT payload:", e);
+                return null;
+            }
+        }
+
+        let userDetails = decodeJwtPayload(token)
+        let linksToDisplay = pages[userDetails.role]
+
+        let HTMLString = ""
+        linksToDisplay.forEach(link => {
+            HTMLString += `<a href="${link.link}">${link.name}</a> |`
+        })
+        navLinkElement.innerHTML = HTMLString
+
+        // Configuration for the backend API URL
+        const API_URL = "http://localhost:3000"
+
+        // DOM Element Selections
+        // We select all necessary elements once to avoid repeated DOM queries
+        let addUserBtn = document.querySelector("#addUserBtn")
+        let fullNameElement = document.querySelector("#fullNameInput")
+        let emailElement = document.querySelector("#email")
+        let passwordElement = document.querySelector("#password")
+        let roleElement = document.querySelector("#role")
+        let statusElement = document.querySelector("#status")
+        let departmentElement = document.querySelector("#department")
+        let usersTableBody = document.querySelector("#users-table-body")
+        let actionElement = document.querySelector("#action")
+        let userIDElement = document.querySelector("#userID")
+        const Authorization = "Bearer " + localStorage.getItem("tokenKGL") || ""
+
+
+        /**
+         * Fetches all users from the API and renders them in the table.
+         * Uses the UI Avatars API to generate profile pictures based on names.
+         */
+        async function getUsers() {
+            let users = await fetch(`${API_URL}/users`, {
+                headers: {
+                    Authorization
+                }
+            })
+                .then((res) => res.json())
+                .catch((err) => {
+                    console.log(err)
+                    return []
+                })
+
+            let HTMLToAdd = ''
+            users.forEach(user => {
+                HTMLToAdd += `
+                <tr>
+                    <td>
+                        <div class="user-info">
+                            <img src="https://ui-avatars.com/api/?name=${user.fullName}&background=10b981&color=fff"
+                                class="user-img" alt="">
+                            <div class="user-details">
+                                <div>${user.fullName}</div>
+                                <div>${user.email}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${user.role}</td>
+                    <td>${user.department}</td>
+                    <td><span class="badge badge-success">${user.status}</span></td>
+                    <td style="text-align: right;">
+                        <a href="#new-user-modal">
+                             <button onclick="editUser('${user._id}')" class="icon-btn" title="Edit"><span
+                                class="material-icons-outlined">edit</span></button>
+                        </a>                      
+                        <button onclick="deleteUser('${user._id}')" class="icon-btn delete" title="Delete"><span
+                                class="material-icons-outlined">delete_outline</span></button>
+                    </td>
+                </tr>
+                `
+            })
+
+            usersTableBody.innerHTML = HTMLToAdd
+            console.log(users)
+        }
+
+        getUsers()
+
+
+
+        /**
+         * Event Listener for the "Save Changes" button in the modal.
+         * Handles both Creating a new user and Updating an existing user.
+         * It checks the hidden '#action' input to determine the mode ('create' or 'edit').
+         */
+        addUserBtn.addEventListener("click", async () => {
+            let user = {
+                fullName: fullNameElement.value,
+                email: emailElement.value,
+                role: roleElement.value,
+                password: passwordElement.value,
+                status: statusElement.value,
+                department: departmentElement.value
+            }
+
+            // const isValidEmail = await fetch(`https://apps.emaillistverify.com/api/verifyEmail?secret=${process.env.VERIFY_API_KEY}&email=${user.email}`)
+
+            // const canCreateAccount = isValidEmail.json().then(data => {
+            //     if (data.isValid) {
+            //         return true
+            //     } else {
+            //         return false
+            //     }
+            // })
+
+            // if (!canCreateAccount) {
+            //     alert("Invalid email address, Please enter a working email")
+            //     return
+            // }
+
+            console.log(user)
+            if (!user.fullName || !user.password || !user.email || !user.role || !user.status) {
+                alert("Please fill in all the fields")
+                return
+            }
+            // CASE 1: Create a new user (POST request)
+            if (actionElement.value === "create") {
+                let response = await fetch(`${API_URL}/users`, {
+                    method: "POST",
+                    body: JSON.stringify(user),
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization
+                    }
+                })
+
+                if (!response.ok) {
+                    alert("Couldn't save user")
+                    return
+                }
+
+                let message = await response.json()
+                alert(message.message)
+                window.location.href = "users.html"
+                // CASE 2: Edit an existing user (PATCH request)
+            } else if (actionElement.value === "edit") {
+                // save changes to update the user
+
+                const userID = userIDElement.value
+                fetch(`${API_URL}/users/${userID}`, {
+                    method: "PATCH",
+                    body: JSON.stringify(user),
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization
+                    }
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.error) {
+                            alert(data.message)
+                            window.location.href = "users.html"
+                        } else {
+                            alert(data.error)
+                        }
+                    })
+
+
+            }
+
+
+        })
+
+        /**
+         * Deletes a user by their ID.
+         * Prompts for confirmation before sending the DELETE request.
+         * @param {string} id - The ID of the user to delete
+         */
+        function deleteUser(id) {
+
+            let deleteUSer = confirm("Are you sure you want to delete this user?")
+
+            if (deleteUSer == false) {
+                return
+            }
+
+            fetch(`${API_URL}/users/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization
+                }
+            })
+                .then((res) => res.json())
+                .then(data => {
+                    console.log(data)
+                    if (!data.error) {
+                        alert(data.message)
+                        window.location.href = "users.html"
+                    } else {
+                        alert(data.error)
+                    }
+                })
+        }
+
+        /**
+         * Prepares the modal for editing a user.
+         * 1. Changes the hidden action input to 'edit'.
+         * 2. Fetches the user's current data.
+         * 3. Populates the form fields with that data.
+         * @param {string} id - The ID of the user to edit
+         */
+        function editUser(id) {
+            actionElement.value = "edit"
+            userIDElement.value = id
+            fetch(`${API_URL}/users/${id}`, {
+                headers: {
+                    Authorization
+                }
+            })
+                .then((res) => res.json())
+                .then(data => {
+                    console.log(data)
+                    if (!data.error) {
+                        fullNameElement.value = data.fullName
+                        emailElement.value = data.email
+                        roleElement.value = data.role
+                        statusElement.value = data.status
+                        departmentElement.value = data.department
+
+                    } else {
+                        alert(data.error)
+                    }
+                })
+        }
+
+    </script>
+
+</body>
+
+</html>

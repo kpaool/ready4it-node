@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KGL Groceries - Login</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-dark: #1b5e20;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            --text-muted: #666;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .login-card h1 {
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 1.8rem;
+        }
+
+        .login-card p {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+            font-size: 0.9rem;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .footer-links {
+            margin-top: 20px;
+            font-size: 0.85rem;
+        }
+
+        .footer-links a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Shop Logo Placeholder */
+        .logo-circle {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-card">
+        <div class="logo-circle">KGL</div>
+        <h1>Welcome Back</h1>
+        <p>Please enter your details to login</p>
+
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" id="login-btn" class="btn-login">Login to System</button>
+        </form>
+
+        <div class="footer-links">
+            <a href="#">Forgot Password?</a>
+            <p style="margin-top: 15px; color: #999;">KGL Groceries POS v1.0</p>
+        </div>
+    </div>
+
+
+    <script>
+
+        let loginBtn = document.querySelector("#login-btn")
+        let loginForm = document.querySelector("#login-form")
+        let usernameElement = document.querySelector("#username")
+        let passwordElement = document.querySelector("#password")
+        const BACKEND_URL = "http://localhost:3000"
+
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault()
+            let username = usernameElement.value
+            let password = passwordElement.value
+
+
+            if (!username || !password) {
+                alert("Please enter username and password")
+                return
+            }
+
+
+            const response = await fetch(`${BACKEND_URL}/auth/login`, {
+                method: "post",
+                body: JSON.stringify({ email: username, password }),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+
+
+            if (!response.ok) {
+                alert("Login failed")
+                return
+            }
+
+            let data = await response.json()
+
+
+            if (data?.token) {
+                localStorage.setItem("tokenKGL", data?.token)
+                window.location.href = "kgl.html"
+            }
+            // let usernames = ["admin", "agent", "manager"]
+            // let storedPassword = "12345"
+
+
+            // if (usernames.includes(username) && password === storedPassword) {
+            //     alert("Login successfull")
+
+            //     let userDetails = {
+            //         username,
+            //         firstName: "John",
+            //         lastName: "Katumba",
+            //         role: username
+            //     }
+
+            //     localStorage.setItem("userdetails", JSON.stringify(userDetails))
+            //     window.location.href = "kgl.html"
+
+            // } else {
+            //     alert("Login failed")
+            // }
+
+        })
+
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form </title>
+
+    <style>
+        #checkoutBtn {
+            margin: 50px 0px 0px 40px;
+            background-color: bisque;
+            color: brown;
+            border-radius: 10px;
+        }
+
+        #toast {
+            background-color: orange;
+            color: black;
+            border-radius: 5px;
+            padding: 10px;
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+        }
+
+        .showToast {
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <form action="">
+        <input type="text" name="username" id="username" placeholder="Type username here">
+
+        <input type="password" name="password" id="password" placeholder="Type password here">
+
+        <button type="submit">LOGIN</button>
+    </form>
+
+    <button id="checkoutBtn">CHECKOUT</button>
+
+    <div id="toast" class="showToast">
+        Please continue with the checkout
+    </div>
+
+
+    <script>
+
+        let form = document.querySelector("form")
+
+        let username = document.querySelector("#username")
+        let password = document.querySelector("#password")
+        let checkoutBtn = document.querySelector("#checkoutBtn")
+        let toast = document.querySelector("#toast")
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault()
+
+            let usernameInput = username.value
+            let passwordInput = password.value
+
+            let credentials = {
+                username: usernameInput,
+                password: passwordInput
+            }
+
+            console.log(credentials)
+
+
+            fetch("/login", {
+                method: "post",
+                body: JSON.stringify(credentials)
+            })
+                .then(res => {
+                    console.log(res)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+
+        })
+
+
+        checkoutBtn.addEventListener("mouseout", () => {
+            // alert("Please checkout for a discount")
+            toast.classList.toggle("showToast")
+
+            setTimeout(() => {
+                toast.classList.toggle("showToast")
+            }, 3000)
+
+
+            console.log("Mouse over works")
+        })
+
+    </script>
+
+</body>
+
+</html>

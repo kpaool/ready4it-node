@@ -1,0 +1,97 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    color: #333;
+}
+
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    max-width: 500px;
+    width: 100%;
+}
+
+header {
+    text-align: center;
+    border-bottom: 2px solid #2e7d32;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+h1 { color: #2e7d32; margin-bottom: 5px; }
+
+.info-section h3 { margin-bottom: 10px; color: #555; }
+
+ul {
+    background: #e8f5e9;
+    padding: 15px 35px;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Ensures padding doesn't affect width */
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-submit {
+    background-color: #2e7d32;
+    color: white;
+    flex: 2;
+}
+
+.btn-submit:hover { background-color: #1b5e20; }
+
+.btn-reset {
+    background-color: #e0e0e0;
+    color: #333;
+    flex: 1;
+}
+
+.action-list {
+    margin-top: 25px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-link {
+    background: none;
+    color: #2e7d32;
+    font-size: 0.85em;
+    text-decoration: underline;
+}

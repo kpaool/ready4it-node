@@ -50,6 +50,8 @@ const options = {
 };
 
 
+app.use(express.static("public"))
+
 // Configure basic authentication
 const swaggerAuth = basicAuth({
     users: { 'admin': 'SuperSecretPassword123' }, // Replace with secure credentials (e.g., from environment variables)
@@ -64,8 +66,7 @@ const swaggerSpec = swaggerJSDoc(options);
 app.use('/api-docs', swaggerAuth, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
-app.use(simulateSalesAgent)
-
+// app.use(simulateSalesAgent)
 
 
 protectedRouter.use("/sales", salesRouter)
@@ -75,9 +76,6 @@ protectedRouter.use("/admin", adminRouter)
 
 app.use("/auth", authRouter)
 app.use("/", authMiddleware, protectedRouter)
-
-
-
 
 
 app.use(errorHandler)

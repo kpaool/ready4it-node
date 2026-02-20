@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KGL Groceries Dashboard</title>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --secondary: #fbc02d;
+            --danger: #d32f2f;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            --dark: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top Auth Bar */
+        .top-nav {
+            background-color: var(--dark);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .role-badge {
+            background-color: var(--primary);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            color: #bbb;
+            text-decoration: none;
+            border: 1px solid #555;
+            padding: 4px 10px;
+            border-radius: 4px;
+            transition: 0.3s;
+        }
+
+        .logout-btn:hover {
+            color: white;
+            background: var(--danger);
+            border-color: var(--danger);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary);
+            margin: 0;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary);
+        }
+
+        .card.credit {
+            border-left-color: var(--danger);
+        }
+
+        .card h3 {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        .card .amount {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+            color: var(--dark);
+        }
+
+        /* Table Section */
+        .table-container {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            color: var(--dark);
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #fafafa;
+            color: #777;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .unpaid {
+            background: #ffebee;
+            color: var(--danger);
+        }
+
+        .partial {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .addsale-btn {
+            background-color: green;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 16px;
+        }
+
+        #nav-links a {
+            color: wheat
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="top-nav">
+        <div class="user-info">
+            <span>Logged in as: <strong id="fullName">Alex Mwangi</strong></span>
+            <span class="role-badge" id="userRole">Sales Agent</span>
+        </div>
+        <a href="login.html" class="logout-btn">Logout</a>
+
+        <div id="nav-links">
+            <a href="sales.html">Sales Dashboard</a>
+            <a href="manager.html">Manager Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>KGL Groceries Dashboard</h1>
+            <p style="color: #666;">Sales Overview - January 23, 2026</p>
+        </header>
+
+        <div>
+            <a href="addsale.html" class="addsale-btn">Add Sale</a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="card">
+                <h3>Total Cash Sales</h3>
+                <span class="amount" id="totalSales">UGX 4,500,000</span>
+            </div>
+            <div class="card credit">
+                <h3>Total Credit Sales</h3>
+                <span class="amount" id="totalCreditSales">UGX 820,000</span>
+            </div>
+            <div class="card" style="border-left-color: var(--secondary);">
+                <h3>Pending Collections</h3>
+                <span class="amount" id="pendingSales">12 Orders</span>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <h2>Recent Credit Transactions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Items</th>
+                        <th>Due Date</th>
+                        <th>Balance</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <script>
+        // this part of the code checks for user details in the local storage
+        // if no user details are found, it redirects to the login page
+        let token = localStorage.getItem("tokenKGL")
+        let navLinkElement = document.querySelector("#nav-links")
+
+        if (!token) {
+            window.location.href = "login.html"
+        }
+
+        let pages = {
+            "sales-agent": [{ "name": "Sales Dashboard", "link": "sales.html", }, { "name": "Users Management", "link": "users.html", }],
+            "manager": [{ "name": "Manager Dashboard", "link": "manager.html" }, { "name": "Users Management", "link": "users.html", }],
+            "super-admin": [{ "name": "Sales Dashboard", "link": "sales.html" }, { "name": "Manager Dashboard", "link": "manager.html" }, { "name": "Users Management", "link": "users.html", }]
+        }
+
+        function decodeJwtPayload(token) {
+            try {
+                // Split the token into its three parts: header, payload, and signature
+                const parts = token.split('.');
+                if (parts.length !== 3) {
+                    throw new Error('Invalid token specified: missing part');
+                }
+
+                // The payload is the second part (index 1)
+                const base64Url = parts[1];
+
+                // Convert from Base64Url to Base64 by replacing '-' with '+' and '_' with '/'
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+
+                // Use the built-in atob() function to decode the Base64 string
+                const decodedPayload = window.atob(base64);
+
+                // Handle potential Unicode characters with decodeURIComponent and map function
+                const jsonPayload = decodeURIComponent(decodedPayload.split('').map(function (c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+
+                // Parse the decoded JSON string into a JavaScript object
+                return JSON.parse(jsonPayload);
+
+            } catch (e) {
+                console.error("Failed to decode JWT payload:", e);
+                return null;
+            }
+        }
+
+        let userDetails = decodeJwtPayload(token)
+        let linksToDisplay = pages[userDetails.role]
+
+        let HTMLString = ""
+        linksToDisplay.forEach(link => {
+            HTMLString += `<a href="${link.link}">${link.name}</a>`
+        })
+        navLinkElement.innerHTML = HTMLString
+
+
+
+        let fullNameElement = document.querySelector("#fullName")
+        let userRolesElement = document.querySelector("#userRole")
+        let logoutBtnElement = document.querySelector(".logout-btn")
+        let totalSalesElement = document.querySelector("#totalSales")
+        let totalCreditSalesElement = document.querySelector("#totalCreditSales")
+        let pendingSalesElement = document.querySelector("#pendingSales")
+
+        let dataTableElement = document.querySelector("#data-table")
+
+        fullNameElement.textContent = `${userDetails.fullName}`
+        userRolesElement.textContent = userDetails.role.toUpperCase()
+
+
+        let transactions = localStorage.getItem("transactions")
+        if (!transactions) {
+            localStorage.setItem("transactions", JSON.stringify([]))
+            transactions = []
+        }
+        transactions = JSON.parse(transactions)
+
+
+        let saleRef = {
+            id: "",
+            customerName: "",
+            total: 0,
+            isCredit: false,
+            date: new Date(),
+            dueDate: new Date(),
+            balance: 0,
+            status: "",
+            items: ""
+        }
+
+
+        let totalCashSales = transactions.filter((t) => t.isCredit == false).length || 0
+        let totalCreditSales = transactions.filter((t) => t.isCredit == true).length || 0
+        let pendingSales = transactions.filter((t) => t.balance > 0).length || 0
+
+        totalSalesElement.textContent = totalCashSales
+        totalCreditSalesElement.textContent = totalCreditSales
+        pendingSalesElement.textContent = pendingSales
+
+
+        transactions
+            .filter((t) => t.isCredit == true)
+            .forEach((t) => {
+                let htmlString = `
+            <tr>
+                <td>${t.customer}</td>
+                <td>${t.items}</td>
+                <td>${t.date.toString()}</td>
+                <td><strong>${t.balance}</strong></td>
+                <td><span class="status-badge partial">Partial</span></td>
+            </tr>
+            `
+                dataTableElement.innerHTML += htmlString
+            })
+
+        logoutBtnElement.addEventListener("click", () => {
+            localStorage.removeItem("tokenKGL")
+        })
+
+
+    </script>
+</body>
+
+</html>
