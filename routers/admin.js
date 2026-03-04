@@ -3,6 +3,16 @@ const router = express.Router()
 const { KGLError } = require("../utils/custom-error.js")
 const { SalesModel } = require("../mongodb-server.js")
 const UsersModel = require("../models/users.js")
+const { getGeneralAggregatedSales } = require("../controllers/adminController")
+
+// Middleware to ensure role is Director
+const isDirector = (req, res, next) => {
+    if (req.user && req.user.role && req.user.role.toLowerCase() === "director") {
+        next()
+    } else {
+        res.status(403).json({ message: "Access denied. Only the Director Mr. Orban can view these reports." })
+    }
+}
 
 /**
  * @swagger

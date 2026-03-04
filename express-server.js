@@ -69,9 +69,12 @@ app.use('/api-docs', swaggerAuth, swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 // app.use(simulateSalesAgent)
 
 
+const { router: procurementRouter } = require("./routers/procurement.js")
+
 protectedRouter.use("/sales", salesRouter)
 protectedRouter.use("/users", usersRouter)
 protectedRouter.use("/admin", adminRouter)
+protectedRouter.use("/procurement", procurementRouter)
 
 
 app.use("/auth", authRouter)

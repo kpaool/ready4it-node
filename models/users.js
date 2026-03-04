@@ -1,37 +1,41 @@
 const mongoose = require("mongoose")
 
-
 // Define the schema for the user collection
 const userSchema = new mongoose.Schema({
     fullName: {
         type: String,
         required: true,
-        min: 5 // Minimum length validation
+        trim: true,
+        minlength: 2
     },
     email: {
         type: String,
         required: true,
-        unique: true // Ensure email is unique in the database
+        unique: true,
+        trim: true,
+        lowercase: true
     },
     password: {
         type: String,
         required: true
     },
     role: {
-        type: String, // e.g., 'admin', 'user'
+        type: String,
+        enum: ['manager', 'salesagent', 'director'],
         required: true
     },
-    department: {
+    branch: {
         type: String,
-        required: true
+        required: function () { return this.role !== 'director'; }
     },
     status: {
-        type: String, // e.g., 'active', 'inactive'
-        required: true
+        type: String,
+        enum: ['active', 'inactive'],
+        default: 'active'
     }
-})
+}, { timestamps: true })
 
 // Create the Mongoose model for the 'users' collection
-const usersModel = mongoose.model("users", userSchema)
+const User = mongoose.model("User", userSchema)
 
-module.exports = usersModel 
+module.exports = User

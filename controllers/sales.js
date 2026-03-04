@@ -1,102 +1,94 @@
+const Sale = require("../models/sales")
+const Inventory = require("../models/inventory")
 const { KGLError } = require("../utils/custom-error.js")
-const { SalesModel } = require("../mongodb-server.js")
-
 
 const getAllSales = async (req, res, next) => {
-
     try {
-        let sales = await SalesModel.find()
-        res.json(sales)
-        res.status(200)
+        const sales = await Sale.find()
+        res.status(200).json(sales)
     } catch (error) {
         next(new KGLError("Failed to get sales", 400))
     }
-
 }
 
 const getSaleById = async (req, res, next) => {
-    let id = req.params.id
-
-    if (id.length < 5) {
-        next(new KGLError("Invalid ID signature", 400))
-    }
-
     try {
-        let sale = await SalesModel.find({ _id: id })
+        const sale = await Sale.findById(req.params.id)
         if (!sale) {
-            res.json({ message: "Sale not found" })
-            res.status(404)
+            return res.status(404).json({ message: "Sale not found" })
         }
-        res.json(sale)
-        res.status(200)
+        res.status(200).json(sale)
     } catch (error) {
         next(new KGLError("Failed to find sale", 404))
     }
 }
 
 const createSale = async (req, res) => {
-    let body = req.body
-
     try {
-        let sales = new SalesModel(body)
+        const { produceName, tonnage, amountPaid, buyerName, salesAgentName, branch, time } = req.body
 
-        sales.save()
-            .then(() => {
-                res.json({ message: "Sale saved successfully", body })
-                res.status(201)
+        // 1. Check stock availability
+        const inventory = await Inventory.findOne({ produceName, branch })
+        if (!inventory || inventory.totalTonnage < tonnage) {
+            return res.status(400).json({
+                message: "Insufficient stock or produce not found in this branch",
+                availableStock: inventory ? inventory.totalTonnage : 0
             })
-            .catch((err) => {
-                console.log(err)
-                res.json({ message: "Failed to save sale", error: err, body })
-                res.status(400)
-            })
+        }
+
+        // 2. Reduce stock
+        inventory.totalTonnage -= Number(tonnage)
+        await inventory.save()
+
+        // 3. Save Sale Record
+        const sale = new Sale({
+            produceName,
+            tonnage,
+            amountPaid,
+            buyerName,
+            salesAgentName,
+            branch,
+            time
+        })
+        await sale.save()
+
+        // 4. Notify if out of stock
+        let status = "Sale recorded successfully"
+        if (inventory.totalTonnage === 0) {
+            status += ". ALERT: Produce is now out of stock!"
+        }
+
+        res.status(201).json({
+            message: status,
+            sale,
+            remainingStock: inventory.totalTonnage
+        })
     } catch (error) {
-        res.json({ message: "Failed to save sale", error, body })
-        res.status(400)
+        res.status(400).json({ message: "Failed to save sale", error: error.message })
     }
-
 }
 
 const updateSale = async (req, res) => {
-
     try {
-        const id = req.params.id
-        const body = req.body
-        let updateSale = await SalesModel.findByIdAndUpdate(id, body, { new: true, runValidators: true })
-
-        if (updateSale) {
-            res.json({ message: "Update successful", body: updateSale })
-            res.status(200)
-        } else {
-            res.status(400)
-            res.json({ message: "Failed to update sale" })
-
+        const updatedSale = await Sale.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+        if (!updatedSale) {
+            return res.status(404).json({ message: "Sale not found" })
         }
-
-    } catch (e) {
-        res.json({ message: "Failed to update sale", error: e })
-        res.status(400)
+        res.status(200).json({ message: "Update successful", body: updatedSale })
+    } catch (error) {
+        res.status(400).json({ message: "Failed to update sale", error: error.message })
     }
-
 }
 
 const deleteSale = async (req, res) => {
     try {
-        const id = req.params.salesId
-
-        let result = await SalesModel.findByIdAndDelete(id)
-
-        if (result) {
-            res.json({ message: "Sale deleted successfully", body: result })
-            res.status(200)
-        } else {
-            res.json({ message: "Failed to delete sale" })
-            res.status(400)
+        const result = await Sale.findByIdAndDelete(req.params.salesId || req.params.id)
+        if (!result) {
+            return res.status(404).json({ message: "Sale not found" })
         }
-
-    } catch (e) {
-        res.json({ message: "Failed to delete sale", error: e })
-        res.status(400)
+        res.status(200).json({ message: "Sale deleted successfully", body: result })
+    } catch (error) {
+        res.status(400).json({ message: "Failed to delete sale", error: error.message })
     }
 }
 
