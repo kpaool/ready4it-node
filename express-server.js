@@ -19,10 +19,7 @@ const app = express()
 const protectedRouter = express.Router()
 
 
-app.use(cors({
-    origin: "http://localhost:5500",
-    optionsSuccessStatus: 200
-}))
+app.use(cors())
 
 
 app.use(express.json())
@@ -35,12 +32,6 @@ const swaggerDefinition = {
         version: '1.0.5',
         description: 'This is the documentation for the KGL REST API for the frontend app',
     },
-    servers: [
-        {
-            url: 'http://localhost:3000',
-            description: 'Development server',
-        },
-    ],
 };
 
 // Options for swagger-jsdoc
@@ -63,7 +54,7 @@ const swaggerAuth = basicAuth({
 const swaggerSpec = swaggerJSDoc(options);
 
 // Serve Swagger UI
-app.use('/api-docs', swaggerAuth, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
 // app.use(simulateSalesAgent)
